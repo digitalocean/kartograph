@@ -18,7 +18,23 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Kartograph makes it easy to generate and convert JSON. It's intention is to be used for API clients.
+
+For example, if you have an object that you would like to convert to JSON for a create request to an API. You would have something similar to this:
+
+```ruby
+class UserMapping
+  include Kartograph::DSL
+
+  kartograph do
+    property :name, on: [:create, :update]
+    property :id, on: [:read]
+  end
+end
+
+user = User.new(name: 'Bobby Tables')
+json_for_create = UserMapping.json_for(:create, user)
+```
 
 ## Contributing
 
