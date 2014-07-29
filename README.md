@@ -27,13 +27,20 @@ class UserMapping
   include Kartograph::DSL
 
   kartograph do
-    property :name, on: [:create, :update]
-    property :id, on: [:read]
+    property :name, scope: [:create, :update]
+    property :id, scope: [:read]
   end
 end
 
 user = User.new(name: 'Bobby Tables')
-json_for_create = UserMapping.json_for(:create, user)
+json_for_create = UserMapping.representation_for(:create, user)
+```
+
+Some API's will give you the created resource back as JSON as well on a successful create. For that, you may do something like this:
+
+```ruby
+response = HTTPClient.post("http://something.com/api/users", body: json_for_create)
+created_user = UserMapping.coerce_from(response.body, :read)
 ```
 
 ## Contributing
