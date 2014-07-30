@@ -84,7 +84,6 @@ Kartograph can also handle the event of root keys in response bodies. For exampl
 
 ```json
 { "user": { "id": 123 } }
-
 ```
 
 You could define a mapping like this:
