@@ -15,6 +15,7 @@ module Kartograph
         drawed = Artist.new(object, @kartograph_map).draw(scope)
 
         retrieve_root_key(scope, :singular) do |root_key|
+          # Reassign drawed if a root key exists
           drawed = { root_key => drawed }
         end
 
@@ -25,6 +26,7 @@ module Kartograph
         loaded = loader.load(content)
 
         retrieve_root_key(scope, :singular) do |root_key|
+          # Reassign loaded if a root key exists
           loaded = loaded[root_key]
         end
 
@@ -35,6 +37,7 @@ module Kartograph
         loaded = loader.load(content)
 
         retrieve_root_key(scope, :plural) do |root_key|
+          # Reassign loaded if a root key exists
           loaded = loaded[root_key]
         end
 
