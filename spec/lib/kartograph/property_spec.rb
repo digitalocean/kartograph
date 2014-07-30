@@ -23,4 +23,13 @@ describe Kartograph::Property do
       expect(property.scopes).to eq( [] )
     end
   end
+
+  describe '#value_for' do
+    it 'returns the value when passed an object' do
+      property = Kartograph::Property.new(:sammy)
+      object = double('object', sammy: 'cephalopod')
+
+      expect(property.value_for(object)).to eq('cephalopod')
+    end
+  end
 end

@@ -7,6 +7,10 @@ module Kartograph
       @options = options
     end
 
+    def value_for(object)
+      object.send(name)
+    end
+
     def scopes
       options[:scopes] || []
     end
