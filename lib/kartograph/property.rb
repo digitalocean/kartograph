@@ -34,9 +34,7 @@ module Kartograph
 
     def sculpt_value(value)
       if plural?
-        value.map do |v|
-          Sculptor.new(v, map).sculpt
-        end
+        value.map {|v| Sculptor.new(v, map).sculpt }
       else
         Sculptor.new(value, map).sculpt
       end
