@@ -25,19 +25,53 @@ describe Kartograph::DSL do
         { name: object.name }.to_json
       )
     end
+
+    context 'with a root key for the scope' do
+      it 'returns the json with the root key' do
+        mapped.kartograph do
+          root_key singular: 'user', scopes: [:create]
+        end
+        json = mapped.representation_for(:create, object)
+
+        expect(json).to eq(
+          {
+            user: {
+              name: object.name
+            }
+          }.to_json
+        )
+      end
+    end
   end
 
   describe '.extract_single' do
     include_context 'DSL Objects'
     let(:json) do
-      { id: 1337, name: 'Paul the octopus' }.to_json
+      { id: 1337, name: 'Paul the octopus' }
     end
 
     it 'returns a populated object from a JSON representation' do
-      extracted = mapped.extract_single(json, :read)
+      extracted = mapped.extract_single(json.to_json, :read)
 
       expect(extracted.id).to eq(1337)
       expect(extracted.name).to eq('Paul the octopus')
+    end
+
+    context 'with a root key in the JSON' do
+      let(:json) { { test: super() } }
+
+      before do
+        mapped.kartograph do
+          root_key singular: 'test', scopes: [:read]
+        end
+      end
+
+      it 'traverses into the key and pulls the object from there' do
+        extracted = mapped.extract_single(json.to_json, :read)
+
+        expect(extracted.id).to eq(1337)
+        expect(extracted.name).to eq('Paul the octopus')
+      end
     end
   end
 end

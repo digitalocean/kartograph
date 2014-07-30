@@ -6,6 +6,7 @@ module Kartograph
   autoload :Map, 'kartograph/map'
   autoload :Property, 'kartograph/property'
   autoload :PropertyCollection, 'kartograph/property_collection'
+  autoload :RootKey, 'kartograph/root_key'
 
   autoload :Artist, 'kartograph/artist'
   autoload :Sculptor, 'kartograph/sculptor'
