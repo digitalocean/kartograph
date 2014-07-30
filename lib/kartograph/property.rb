@@ -12,14 +12,14 @@ module Kartograph
       end
     end
 
-    def value_for(object)
+    def value_for(object, scope = nil)
       value = object.send(name)
-      map ? artist_value(value) : value
+      map ? artist_value(value, scope) : value
     end
 
-    def value_from(object)
+    def value_from(object, scope = nil)
       value = object.has_key?(name) ? object[name] : object[name.to_s]
-      map ? sculpt_value(value) : value
+      map ? sculpt_value(value, scope) : value
     end
 
     def scopes
@@ -32,19 +32,19 @@ module Kartograph
 
     private
 
-    def sculpt_value(value)
+    def sculpt_value(value, scope)
       if plural?
-        value.map {|v| Sculptor.new(v, map).sculpt }
+        value.map {|v| Sculptor.new(v, map).sculpt(scope) }
       else
-        Sculptor.new(value, map).sculpt
+        Sculptor.new(value, map).sculpt(scope)
       end
     end
 
-    def artist_value(value)
+    def artist_value(value, scope)
       if plural?
-        value.map {|v| Artist.new(v, map).draw }
+        value.map {|v| Artist.new(v, map).draw(scope) }
       else
-        Artist.new(value, map).draw
+        Artist.new(value, map).draw(scope)
       end
     end
   end

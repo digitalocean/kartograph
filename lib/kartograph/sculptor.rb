@@ -18,7 +18,7 @@ module Kartograph
 
       scoped_properties.each_with_object(coerced) do |property, mutable|
         setter_method = "#{property.name}="
-        value = property.value_from(object)
+        value = property.value_from(object, scope)
         mutable.send(setter_method, value)
       end
     end

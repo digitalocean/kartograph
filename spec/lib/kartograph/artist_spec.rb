@@ -46,6 +46,25 @@ describe Kartograph::Artist do
 
         expect(masterpiece).to eq(hello: 'world')
       end
+
+      context 'on nested properties' do
+        it 'only returns the nested properties within the same scope' do
+          child = double('child', hello: 'world', foo: 'bunk')
+          object = double('object', child: child)
+
+          root_property = Kartograph::Property.new(:child, scopes: [:create, :read]) do
+            property :hello, scopes: [:create]
+            property :foo, scopes: [:read]
+          end
+
+          properties << root_property
+
+          artist = Kartograph::Artist.new(object, map)
+          masterpiece = artist.draw(:read)
+
+          expect(masterpiece).to eq(child: { foo: child.foo })
+        end
+      end
     end
   end
 end

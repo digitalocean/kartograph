@@ -1,7 +1,7 @@
 module Kartograph
   class Map
-    def property(*args)
-      properties << Property.new(*args)
+    def property(*args, &block)
+      properties << Property.new(*args, &block)
     end
 
     def properties
