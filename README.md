@@ -49,7 +49,7 @@ Most API's will have a way of retrieving an entire resource collection. For this
 
 ```ruby
 response = HTTPClient.get("http://something.com/api/users")
-users = UserMapping.extract_collection(response.bdoy, :read)
+users = UserMapping.extract_collection(response.body, :read)
 # => [ User, User, User ]
 ```
 
@@ -75,6 +75,42 @@ class UserMapping
   end
 end
 ```
+
+Just like the previous examples, when you serialize this. It will include the comment block for the scope defined.
+
+### Root Keys
+
+Kartograph can also handle the event of root keys in response bodies. For example, if you receive a response with:
+
+```json
+{ "user": { "id": 123 } }
+
+```
+
+You could define a mapping like this:
+
+
+```ruby
+class UserMapping
+  include Kartograph::DSL
+
+  kartograph do
+    mapping User
+    root_key singular: 'user', plural: 'users' scopes: [:read]
+    property :id, scopes: [:read]
+  end
+end
+```
+
+This means that when you call the same thing:
+
+```ruby
+response = HTTPClient.get("http://something.com/api/users")
+users = UserMapping.extract_collection(response.body, :read)
+```
+
+It will look for the root key before trying to deserialize the JSON response.
+The advantage of this is it will only use the root key if there is a scope defined for it.
 
 ## Contributing
 
