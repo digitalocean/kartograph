@@ -40,7 +40,15 @@ Some API's will give you the created resource back as JSON as well on a successf
 
 ```ruby
 response = HTTPClient.post("http://something.com/api/users", body: json_for_create)
-created_user = UserMapping.coerce_from(response.body, :read)
+created_user = UserMapping.extract_single(response.body, :read)
+```
+
+Most API's will have a way of retrieving an entire resource collection. For this you can instruct Kartograph to convert a collection.
+
+```ruby
+response = HTTPClient.get("http://something.com/api/users")
+users = UserMapping.extract_collection(response.bdoy, :read)
+# => [ User, User, User ]
 ```
 
 ## Contributing
