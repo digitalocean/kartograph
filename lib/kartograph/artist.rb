@@ -1,10 +1,14 @@
 module Kartograph
   class Artist
-    attr_reader :object, :properties
+    attr_reader :object, :map
 
-    def initialize(object, properties)
+    def initialize(object, map)
       @object = object
-      @properties = properties
+      @map = map
+    end
+
+    def properties
+      map.properties
     end
 
     def draw(scope = nil)

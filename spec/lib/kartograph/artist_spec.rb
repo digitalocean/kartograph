@@ -1,27 +1,27 @@
 require 'spec_helper'
 
 describe Kartograph::Artist do
-  describe '#initialize' do
-    it 'initializes with an object and list of properties' do
-      object     = double('object', name: 'hello')
-      collection = Kartograph::PropertyCollection.new
-      collection << Kartograph::Property.new(:name)
+  let(:map) { Kartograph::Map.new }
+  let(:properties) { map.properties }
 
-      artist = Kartograph::Artist.new(object, collection)
+  describe '#initialize' do
+    it 'initializes with an object and a map' do
+      object     = double('object', name: 'hello')
+      properties << Kartograph::Property.new(:name)
+
+      artist = Kartograph::Artist.new(object, map)
 
       expect(artist.object).to be(object)
-      expect(artist.properties).to be(collection)
+      expect(artist.map).to be(map)
     end
   end
 
   describe '#draw' do
-    let(:collection) { Kartograph::PropertyCollection.new }
-
     it 'returns a hash of mapped properties' do
       object     = double('object', hello: 'world')
-      collection << Kartograph::Property.new(:hello)
+      properties << Kartograph::Property.new(:hello)
 
-      artist = Kartograph::Artist.new(object, collection)
+      artist = Kartograph::Artist.new(object, map)
       masterpiece = artist.draw
 
       expect(masterpiece).to include(hello: 'world')
@@ -29,8 +29,8 @@ describe Kartograph::Artist do
 
     it 'raises for a property that the object does not have' do
       object = double('object')
-      collection << Kartograph::Property.new(:bunk)
-      artist = Kartograph::Artist.new(object, collection)
+      properties << Kartograph::Property.new(:bunk)
+      artist = Kartograph::Artist.new(object, map)
 
       expect { artist.draw }.to raise_error(ArgumentError).with_message("#{object} does not respond to bunk, so we can't map it")
     end
@@ -38,10 +38,10 @@ describe Kartograph::Artist do
     context 'for filtered drawing' do
       it 'only returns the scoped properties' do
         object     = double('object', hello: 'world', foo: 'bar')
-        collection << Kartograph::Property.new(:hello, scopes: [:create, :read])
-        collection << Kartograph::Property.new(:foo, scopes: [:create])
+        properties << Kartograph::Property.new(:hello, scopes: [:create, :read])
+        properties << Kartograph::Property.new(:foo, scopes: [:create])
 
-        artist = Kartograph::Artist.new(object, collection)
+        artist = Kartograph::Artist.new(object, map)
         masterpiece = artist.draw(:read)
 
         expect(masterpiece).to eq(hello: 'world')

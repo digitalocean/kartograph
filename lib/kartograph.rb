@@ -1,4 +1,5 @@
 require "kartograph/version"
+require 'json'
 
 module Kartograph
   autoload :DSL, 'kartograph/dsl'
