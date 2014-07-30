@@ -10,6 +10,12 @@ describe Kartograph::Property do
       expect(property.name).to eq(name)
       expect(property.options).to eq(options)
     end
+
+    context 'with a block' do
+      it 'yields a map instance for the property' do
+        expect {|b| Kartograph::Property.new(:hello, &b) }.to yield_with_args(instance_of(Kartograph::Map))
+      end
+    end
   end
 
   describe '#scopes' do
@@ -24,12 +30,126 @@ describe Kartograph::Property do
     end
   end
 
+  describe '#plural?' do
+    it 'returns true when set to plural' do
+      property = Kartograph::Property.new(:name, scopes: [:read], plural: true)
+      expect(property).to be_plural
+    end
+
+    it 'returns false when not set' do
+      property = Kartograph::Property.new(:name, scopes: [:read])
+      expect(property).to_not be_plural
+    end
+  end
+
   describe '#value_for' do
     it 'returns the value when passed an object' do
       property = Kartograph::Property.new(:sammy)
       object = double('object', sammy: 'cephalopod')
 
       expect(property.value_for(object)).to eq('cephalopod')
+    end
+
+    context 'for a nested property set' do
+      it 'returns nested properties' do
+        top_level = Kartograph::Property.new(:sammy) do
+          property :cephalopod
+        end
+
+        child = double('child', cephalopod: 'I will ink you')
+        root = double('root', sammy: child)
+
+        expect(top_level.value_for(root)).to eq(cephalopod: child.cephalopod)
+      end
+
+      context 'when it is plural' do
+        it 'returns a pluralized representation' do
+          top_level = Kartograph::Property.new(:sammy, plural: true) do
+            property :cephalopod
+          end
+
+          child1 = double('child', cephalopod: 'I will ink you')
+          child2 = double('child', cephalopod: 'I wont because im cool')
+
+          root = double('root', sammy: [child1, child2])
+
+          expect(top_level.value_for(root)).to eq([
+            { cephalopod: child1.cephalopod },
+            { cephalopod: child2.cephalopod }
+          ])
+        end
+      end
+    end
+  end
+
+  describe '#value_from' do
+    let(:hash) { { hello: 'world' } }
+
+    it 'retrieves the value from a hash for the property' do
+      property = Kartograph::Property.new(:hello)
+      expect(property.value_from(hash)).to eq('world')
+    end
+
+    context 'string and symbol agnostic' do
+      let(:hash) { { 'hello' => 'world' } }
+
+      it 'retrieves the value from a hash for the property' do
+        property = Kartograph::Property.new(:hello)
+        expect(property.value_from(hash)).to eq('world')
+      end
+    end
+
+    context 'for a nested property set' do
+      it 'returns an object with the properties set on it' do
+        dummy_class = Struct.new(:id, :name)
+
+        nested_property = Kartograph::Property.new(:hello) do
+          mapping dummy_class
+          property :id
+          property :name
+        end
+
+        hash = { hello: {
+          'id' => 555,
+          'name' => 'Buckstar'
+        }}
+
+        value = nested_property.value_from(hash)
+        expect(value).to be_kind_of(dummy_class)
+        expect(value.id).to eq(hash[:hello]['id'])
+        expect(value.name).to eq(hash[:hello]['name'])
+      end
+
+      it 'returns a collection of objects when set to plural' do
+        dummy_class = Struct.new(:id, :name)
+
+        nested_property = Kartograph::Property.new(:hello, plural: true) do
+          mapping dummy_class
+
+          property :id
+          property :name
+        end
+
+        hash = {
+          hello: [{
+            'id' => 555,
+            'name' => 'Buckstar'
+          }, {
+            'id' => 556,
+            'name' => 'Starbuck'
+          }]
+        }
+
+        value = nested_property.value_from(hash)
+        expect(value).to be_kind_of(Array)
+        expect(value.size).to be(2)
+
+        expect(value[0].id).to eq(hash[:hello][0]['id'])
+        expect(value[0].name).to eq(hash[:hello][0]['name'])
+
+        expect(value[1].id).to eq(hash[:hello][1]['id'])
+        expect(value[1].name).to eq(hash[:hello][1]['name'])
+      end
     end
   end
 end

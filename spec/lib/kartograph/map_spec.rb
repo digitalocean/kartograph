@@ -24,4 +24,11 @@ describe Kartograph::Map do
       expect(map.mapping).to be(Class)
     end
   end
+
+  describe '#root_keys' do
+    it 'sets the root keys' do
+      map.root_keys single: 'test', plural: 'tests'
+      expect(map.root_keys).to eq(single: 'test', plural: 'tests')
+    end
+  end
 end

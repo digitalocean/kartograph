@@ -8,4 +8,5 @@ module Kartograph
   autoload :PropertyCollection, 'kartograph/property_collection'
 
   autoload :Artist, 'kartograph/artist'
+  autoload :Sculptor, 'kartograph/sculptor'
 end

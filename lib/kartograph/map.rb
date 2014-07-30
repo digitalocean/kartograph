@@ -12,5 +12,10 @@ module Kartograph
       @mapping = klass if klass
       @mapping
     end
+
+    def root_keys(set = nil)
+      @root_keys = set if set
+      @root_keys
+    end
   end
 end

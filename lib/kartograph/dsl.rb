@@ -15,6 +15,11 @@ module Kartograph
         drawed = Artist.new(object, @kartograph_map).draw(scope)
         dumper.dump(drawed)
       end
+
+      def extract_single(content, scope, loader = JSON)
+        loaded = loader.load(content)
+        Sculptor.new(loaded, @kartograph_map).sculpt(scope)
+      end
     end
   end
 end
