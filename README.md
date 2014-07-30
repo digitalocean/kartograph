@@ -27,6 +27,8 @@ class UserMapping
   include Kartograph::DSL
 
   kartograph do
+    mapping User # The object we're mapping
+
     property :name, scopes: [:create, :update]
     property :id, scopes: [:read]
   end

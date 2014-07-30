@@ -4,4 +4,7 @@ module Kartograph
   autoload :DSL, 'kartograph/dsl'
   autoload :Map, 'kartograph/map'
   autoload :Property, 'kartograph/property'
+  autoload :PropertyCollection, 'kartograph/property_collection'
+
+  autoload :Artist, 'kartograph/artist'
 end

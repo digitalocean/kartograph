@@ -9,6 +9,10 @@ module Kartograph
         @map ||= Map.new
         yield @map
       end
+
+      def representation_for(scope, object)
+
+      end
     end
   end
 end

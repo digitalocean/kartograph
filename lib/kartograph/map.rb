@@ -5,7 +5,12 @@ module Kartograph
     end
 
     def properties
-      @properties ||= []
+      @properties ||= PropertyCollection.new
+    end
+
+    def mapping(klass = nil)
+      @mapping = klass if klass
+      @mapping
     end
   end
 end
