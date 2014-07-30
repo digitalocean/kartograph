@@ -1,5 +1,7 @@
 require "kartograph/version"
 
 module Kartograph
-  # Your code goes here...
+  autoload :DSL, 'kartograph/dsl'
+  autoload :Map, 'kartograph/map'
+  autoload :Property, 'kartograph/property'
 end
