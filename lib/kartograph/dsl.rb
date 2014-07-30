@@ -14,7 +14,7 @@ module Kartograph
       def representation_for(scope, object, dumper = JSON)
         drawed = Artist.new(object, @kartograph_map).draw(scope)
 
-        if root_key = @kartograph_map.root_key_for(scope, :singular)
+        retrieve_root_key(scope, :singular) do |root_key|
           drawed = { root_key => drawed }
         end
 
@@ -24,11 +24,31 @@ module Kartograph
       def extract_single(content, scope, loader = JSON)
         loaded = loader.load(content)
 
-        if root_key = @kartograph_map.root_key_for(scope, :singular)
+        retrieve_root_key(scope, :singular) do |root_key|
           loaded = loaded[root_key]
         end
 
         Sculptor.new(loaded, @kartograph_map).sculpt(scope)
+      end
+
+      def extract_collection(content, scope, loader = JSON)
+        loaded = loader.load(content)
+
+        retrieve_root_key(scope, :plural) do |root_key|
+          loaded = loaded[root_key]
+        end
+
+        loaded.map do |object|
+          Sculptor.new(object, @kartograph_map).sculpt(scope)
+        end
+      end
+
+      private
+
+      def retrieve_root_key(scope, type, &block)
+        if root_key = @kartograph_map.root_key_for(scope, type)
+          yield root_key
+        end
       end
     end
   end

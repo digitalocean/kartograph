@@ -74,4 +74,52 @@ describe Kartograph::DSL do
       end
     end
   end
+
+  describe '.extract_collection' do
+    include_context 'DSL Objects'
+    let(:json) do
+      [
+        { id: 1337, name: 'Paul the octopus' },
+        { id: 1338, name: 'Hank the octopus' }
+      ]
+    end
+
+    it 'returns a collection of objects from the json' do
+      extracted = mapped.extract_collection(json.to_json, :read)
+
+      expect(extracted.size).to be(2)
+      expect(extracted).to all(be_kind_of(DummyUser))
+
+      expect(extracted[0].id).to eq(json[0][:id])
+      expect(extracted[0].name).to eq(json[0][:name])
+
+      expect(extracted[1].id).to eq(json[1][:id])
+      expect(extracted[1].name).to eq(json[1][:name])
+    end
+
+    context 'for a nested key' do
+      let(:json) { { users: super() } }
+
+      before do
+        mapped.kartograph do
+          root_key plural: 'users', scopes: [:read]
+        end
+      end
+
+      it 'returns a collection of objects from the json' do
+        extracted = mapped.extract_collection(json.to_json, :read)
+
+        expect(extracted.size).to be(2)
+        expect(extracted).to all(be_kind_of(DummyUser))
+
+        scoped = json[:users]
+
+        expect(extracted[0].id).to eq(scoped[0][:id])
+        expect(extracted[0].name).to eq(scoped[0][:name])
+
+        expect(extracted[1].id).to eq(scoped[1][:id])
+        expect(extracted[1].name).to eq(scoped[1][:name])
+      end
+    end
+  end
 end
