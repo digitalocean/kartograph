@@ -53,6 +53,29 @@ users = UserMapping.extract_collection(response.bdoy, :read)
 # => [ User, User, User ]
 ```
 
+### Getting Harder
+
+Sometimes resources will nest other properties under a key. Kartograph can handle this as well.
+
+```ruby
+class UserMapping
+  include Kartograph::DSL
+
+  kartograph do
+    mapping User # The object we're mapping
+
+    property :name, scopes: [:read]
+
+    property :comments do
+      mapping Comment # The nested object we're mapping
+
+      property :text, scopes: [:read]
+      property :author, scopes: [:read]
+    end
+  end
+end
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/kartograph/fork )
