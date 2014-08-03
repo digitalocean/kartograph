@@ -13,7 +13,21 @@ describe Kartograph::Property do
 
     context 'with a block' do
       it 'yields a map instance for the property' do
-        expect {|b| Kartograph::Property.new(:hello, &b) }.to yield_with_args(instance_of(Kartograph::Map))
+        expect {|b| Kartograph::Property.new(:hello, &b) }.to yield_with_args(Kartograph::Map.new)
+      end
+    end
+
+    context 'with an include' do
+      it 'sets the map to the included mapped class' do
+        klass = Class.new do
+          include Kartograph::DSL
+          kartograph do
+            property :lol, scopes: [:read]
+          end
+        end
+
+        property = Kartograph::Property.new(:id, scopes: [:read], include: klass)
+        expect(property.map).to eq(klass.kartograph)
       end
     end
   end

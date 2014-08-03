@@ -7,6 +7,12 @@ module Kartograph
       @name = name
       @options = options
 
+      if mapped_class = options[:include]
+        # Perform a safe duplication into our properties map
+        # This allows the user to define more attributes on the map should they need to
+        @map = mapped_class.kartograph.dup
+      end
+
       if block_given?
         @map ||= Map.new
         block.arity > 0 ? block.call(map) : map.instance_eval(&block)
@@ -34,6 +40,13 @@ module Kartograph
     def dup
       Property.new(name, options.dup).tap do |property|
         property.map = map.dup if self.map
+      end
+    end
+
+    def ==(other)
+      %i(name options map).inject(true) do |equals, method|
+        break unless equals
+        send(method) == other.send(method)
       end
     end
 

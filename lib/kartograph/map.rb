@@ -36,5 +36,13 @@ module Kartograph
         end
       end
     end
+
+    def ==(other)
+      methods = %i(properties root_keys mapping)
+      methods.inject(true) do |current_value, method|
+        break unless current_value
+        send(method) == other.send(method)
+      end
+    end
   end
 end

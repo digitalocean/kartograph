@@ -12,7 +12,11 @@ describe Kartograph::DSL do
     subject(:mapping) { Class.new { include Kartograph::DSL } }
 
     it 'yields a Kartograph::Map instance' do
-      expect {|b| mapping.kartograph(&b) }.to yield_with_args(instance_of(Kartograph::Map))
+      expect {|b| mapping.kartograph(&b) }.to yield_with_args(Kartograph::Map.new)
+    end
+
+    it 'returns the map instance' do
+      expect(mapping.kartograph).to be_kind_of(Kartograph::Map)
     end
   end
 

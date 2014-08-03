@@ -8,7 +8,11 @@ module Kartograph
       def kartograph(&block)
         @kartograph_map ||= Map.new
 
-        block.arity > 0 ? block.call(@kartograph_map) : @kartograph_map.instance_eval(&block)
+        if block_given?
+          block.arity > 0 ? block.call(@kartograph_map) : @kartograph_map.instance_eval(&block)
+        end
+
+        @kartograph_map
       end
 
       def representation_for(scope, object, dumper = JSON)

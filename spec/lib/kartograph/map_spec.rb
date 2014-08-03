@@ -51,11 +51,23 @@ describe Kartograph::Map do
 
       new_map = map.dup
 
-      expect(new_map.properties).to_not include(prop1, prop2)
+      expect(new_map.properties[0]).to_not be(prop1)
+      expect(new_map.properties[1]).to_not be(prop2)
 
       expect(new_map.properties).to all(be_kind_of(Kartograph::Property))
       expect(new_map.properties[0].name).to eq(:name)
       expect(new_map.properties[1].name).to eq(:id)
+    end
+  end
+
+  describe 'Equality' do
+    specify 'duplicated maps are equal to eachother' do
+      map1 = Kartograph::Map.new
+      map1.property :something, scopes: [:read]
+
+      map2 = map1.dup
+
+      expect(map1).to eq(map2)
     end
   end
 end
