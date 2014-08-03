@@ -104,6 +104,14 @@ describe Kartograph::Property do
       expect(property.value_from(hash)).to eq('world')
     end
 
+    context 'for a nil object' do
+      it 'bails and does not try to retrieve' do
+        property = Kartograph::Property.new(:hello)
+        value = property.value_from(nil)
+        expect(value).to be_nil
+      end
+    end
+
     context 'string and symbol agnostic' do
       let(:hash) { { 'hello' => 'world' } }
 
