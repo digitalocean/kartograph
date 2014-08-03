@@ -111,6 +111,35 @@ users = UserMapping.extract_collection(response.body, :read)
 It will look for the root key before trying to deserialize the JSON response.
 The advantage of this is it will only use the root key if there is a scope defined for it.
 
+
+### Including other definitions within eachother
+
+Sometimes you might have models that are nested within eachother on responses. Or you simply want to cleanup definitions by separating concerns. Kartograph lets you do this with includes.
+
+```ruby
+class UserMapping
+  include Kartograph::DSL
+
+  kartograph do
+    mapping User
+    property :id, scopes: [:read]
+    property :comments, plural: true, include: CommentMapping
+  end
+end
+
+class CommentMapping
+  include Kartograph::DSL
+
+  kartograph do
+    mapping Comment
+    property :id, scopes: [:read]
+    property :text, scopes: [:read]
+  end
+end
+```
+
+Now when JSON includes comments for a user, it will know how to map the comments using the provided Kartograph definition.
+
 ## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/kartograph/fork )

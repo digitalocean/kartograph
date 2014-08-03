@@ -1,6 +1,7 @@
 module Kartograph
   class Property
-    attr_reader :name, :options, :map
+    attr_reader :name, :options
+    attr_accessor :map
 
     def initialize(name, options = {}, &block)
       @name = name
@@ -28,6 +29,12 @@ module Kartograph
 
     def plural?
       !!options[:plural]
+    end
+
+    def dup
+      Property.new(name, options.dup).tap do |property|
+        property.map = map.dup if self.map
+      end
     end
 
     private

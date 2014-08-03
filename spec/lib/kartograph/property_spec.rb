@@ -152,4 +152,16 @@ describe Kartograph::Property do
       end
     end
   end
+
+  describe '#dup' do
+    it 'copies the name, options, and map into another property' do
+      instance = Kartograph::Property.new(:id, scopes: [:read])
+      duped = instance.dup
+
+      expect(duped).to be_kind_of(Kartograph::Property)
+      expect(duped.name).to eq(:id)
+      expect(duped.options).to_not be(instance.options)
+      expect(duped.options).to eq(instance.options)
+    end
+  end
 end

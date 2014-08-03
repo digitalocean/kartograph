@@ -43,4 +43,19 @@ describe Kartograph::Map do
       expect(key).to eq('test')
     end
   end
+
+  describe '#dup' do
+    it 'performs a safe duplication of the map' do
+      prop1 = map.property :name, scopes: [:read, :write]
+      prop2 = map.property :id, scopes: [:read]
+
+      new_map = map.dup
+
+      expect(new_map.properties).to_not include(prop1, prop2)
+
+      expect(new_map.properties).to all(be_kind_of(Kartograph::Property))
+      expect(new_map.properties[0].name).to eq(:name)
+      expect(new_map.properties[1].name).to eq(:id)
+    end
+  end
 end

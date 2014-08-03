@@ -1,7 +1,7 @@
 module Kartograph
   class Map
     def property(*args, &block)
-      properties << Property.new(*args, &block)
+      Property.new(*args, &block).tap {|p| properties << p }
     end
 
     def properties
@@ -26,6 +26,14 @@ module Kartograph
 
       if (root_key = root_keys.select {|rk| rk.scopes.include?(scope) }[0])
         root_key.send(type)
+      end
+    end
+
+    def dup
+      Kartograph::Map.new.tap do |map|
+        self.properties.each do |property|
+          map.properties << property.dup
+        end
       end
     end
   end
