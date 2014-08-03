@@ -46,8 +46,12 @@ describe Kartograph::Map do
 
   describe '#dup' do
     it 'performs a safe duplication of the map' do
+      mapped_class = Class.new
+
       prop1 = map.property :name, scopes: [:read, :write]
       prop2 = map.property :id, scopes: [:read]
+      map.mapping mapped_class
+      map.root_key singular: 'woot', plural: 'woots', scopes: [:read]
 
       new_map = map.dup
 
@@ -57,6 +61,9 @@ describe Kartograph::Map do
       expect(new_map.properties).to all(be_kind_of(Kartograph::Property))
       expect(new_map.properties[0].name).to eq(:name)
       expect(new_map.properties[1].name).to eq(:id)
+
+      expect(new_map.mapping).to eq(mapped_class)
+      expect(new_map.root_keys).to eq(map.root_keys)
     end
   end
 

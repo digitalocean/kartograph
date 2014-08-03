@@ -34,6 +34,12 @@ module Kartograph
         self.properties.each do |property|
           map.properties << property.dup
         end
+
+        map.mapping self.mapping
+
+        self.root_keys.each do |rk|
+          map.root_keys << rk
+        end
       end
     end
 
