@@ -9,6 +9,21 @@ describe Kartograph::Map do
       expect(map.properties.size).to be(1)
       expect(map.properties.first).to be_kind_of(Kartograph::Property)
     end
+
+    context 'defining multiple properties' do
+      it 'adds multiple properties at the same time for the scope' do
+        map.property :attribute1, :attribute2, scopes: [:read]
+
+        expect(map.properties.size).to be(2)
+        expect(map.properties).to all(be_kind_of(Kartograph::Property))
+
+        expect(map.properties[0].name).to eq(:attribute1)
+        expect(map.properties[0].scopes).to eq([:read])
+
+        expect(map.properties[1].name).to eq(:attribute2)
+        expect(map.properties[1].scopes).to eq([:read])
+      end
+    end
   end
 
   describe '#properties' do
@@ -41,6 +56,40 @@ describe Kartograph::Map do
       key = map.root_key_for(:read, :singular)
 
       expect(key).to eq('test')
+    end
+  end
+
+  describe '#dup' do
+    it 'performs a safe duplication of the map' do
+      mapped_class = Class.new
+
+      prop1 = map.property :name, scopes: [:read, :write]
+      prop2 = map.property :id, scopes: [:read]
+      map.mapping mapped_class
+      map.root_key singular: 'woot', plural: 'woots', scopes: [:read]
+
+      new_map = map.dup
+
+      expect(new_map.properties[0]).to_not be(prop1)
+      expect(new_map.properties[1]).to_not be(prop2)
+
+      expect(new_map.properties).to all(be_kind_of(Kartograph::Property))
+      expect(new_map.properties[0].name).to eq(:name)
+      expect(new_map.properties[1].name).to eq(:id)
+
+      expect(new_map.mapping).to eq(mapped_class)
+      expect(new_map.root_keys).to eq(map.root_keys)
+    end
+  end
+
+  describe 'Equality' do
+    specify 'duplicated maps are equal to eachother' do
+      map1 = Kartograph::Map.new
+      map1.property :something, scopes: [:read]
+
+      map2 = map1.dup
+
+      expect(map1).to eq(map2)
     end
   end
 end

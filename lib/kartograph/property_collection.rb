@@ -16,5 +16,12 @@ module Kartograph
         property.scopes.include?(scope)
       end
     end
+
+    def ==(other)
+      each_with_index.inject(true) do |current_value, (property, index)|
+        break unless current_value
+        property == other[index]
+      end
+    end
   end
 end

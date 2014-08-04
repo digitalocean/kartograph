@@ -1,7 +1,10 @@
 module Kartograph
   class Map
     def property(*args, &block)
-      properties << Property.new(*args, &block)
+      options = args.last.is_a?(Hash) ? args.pop : {}
+      args.each do |prop|
+        properties << Property.new(prop, options, &block)
+      end
     end
 
     def properties
@@ -26,6 +29,28 @@ module Kartograph
 
       if (root_key = root_keys.select {|rk| rk.scopes.include?(scope) }[0])
         root_key.send(type)
+      end
+    end
+
+    def dup
+      Kartograph::Map.new.tap do |map|
+        self.properties.each do |property|
+          map.properties << property.dup
+        end
+
+        map.mapping self.mapping
+
+        self.root_keys.each do |rk|
+          map.root_keys << rk
+        end
+      end
+    end
+
+    def ==(other)
+      methods = %i(properties root_keys mapping)
+      methods.inject(true) do |current_value, method|
+        break unless current_value
+        send(method) == other.send(method)
       end
     end
   end

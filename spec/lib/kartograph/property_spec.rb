@@ -13,7 +13,21 @@ describe Kartograph::Property do
 
     context 'with a block' do
       it 'yields a map instance for the property' do
-        expect {|b| Kartograph::Property.new(:hello, &b) }.to yield_with_args(instance_of(Kartograph::Map))
+        expect {|b| Kartograph::Property.new(:hello, &b) }.to yield_with_args(Kartograph::Map.new)
+      end
+    end
+
+    context 'with an include' do
+      it 'sets the map to the included mapped class' do
+        klass = Class.new do
+          include Kartograph::DSL
+          kartograph do
+            property :lol, scopes: [:read]
+          end
+        end
+
+        property = Kartograph::Property.new(:id, scopes: [:read], include: klass)
+        expect(property.map).to eq(klass.kartograph)
       end
     end
   end
@@ -27,6 +41,11 @@ describe Kartograph::Property do
     it 'returns an empty array when no scopes are provided' do
       property = Kartograph::Property.new(:name)
       expect(property.scopes).to eq( [] )
+    end
+
+    it 'always casts to an array' do
+      property = Kartograph::Property.new(:name, scopes: :read)
+      expect(property.scopes).to eq [:read]
     end
   end
 
@@ -90,6 +109,14 @@ describe Kartograph::Property do
       expect(property.value_from(hash)).to eq('world')
     end
 
+    context 'for a nil object' do
+      it 'bails and does not try to retrieve' do
+        property = Kartograph::Property.new(:hello)
+        value = property.value_from(nil)
+        expect(value).to be_nil
+      end
+    end
+
     context 'string and symbol agnostic' do
       let(:hash) { { 'hello' => 'world' } }
 
@@ -150,6 +177,18 @@ describe Kartograph::Property do
         expect(value[1].id).to eq(hash[:hello][1]['id'])
         expect(value[1].name).to eq(hash[:hello][1]['name'])
       end
+    end
+  end
+
+  describe '#dup' do
+    it 'copies the name, options, and map into another property' do
+      instance = Kartograph::Property.new(:id, scopes: [:read])
+      duped = instance.dup
+
+      expect(duped).to be_kind_of(Kartograph::Property)
+      expect(duped.name).to eq(:id)
+      expect(duped.options).to_not be(instance.options)
+      expect(duped.options).to eq(instance.options)
     end
   end
 end
