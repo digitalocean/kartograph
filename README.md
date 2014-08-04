@@ -29,8 +29,8 @@ class UserMapping
   kartograph do
     mapping User # The object we're mapping
 
-    property :name, scopes: [:create, :update]
-    property :id, scopes: [:read]
+    property :name, :email, scopes: [:create, :update]
+    property :id, scopes: :read
   end
 end
 

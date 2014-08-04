@@ -9,6 +9,21 @@ describe Kartograph::Map do
       expect(map.properties.size).to be(1)
       expect(map.properties.first).to be_kind_of(Kartograph::Property)
     end
+
+    context 'defining multiple properties' do
+      it 'adds multiple properties at the same time for the scope' do
+        map.property :attribute1, :attribute2, scopes: [:read]
+
+        expect(map.properties.size).to be(2)
+        expect(map.properties).to all(be_kind_of(Kartograph::Property))
+
+        expect(map.properties[0].name).to eq(:attribute1)
+        expect(map.properties[0].scopes).to eq([:read])
+
+        expect(map.properties[1].name).to eq(:attribute2)
+        expect(map.properties[1].scopes).to eq([:read])
+      end
+    end
   end
 
   describe '#properties' do

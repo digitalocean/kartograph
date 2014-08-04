@@ -1,7 +1,10 @@
 module Kartograph
   class Map
     def property(*args, &block)
-      Property.new(*args, &block).tap {|p| properties << p }
+      options = args.last.is_a?(Hash) ? args.pop : {}
+      args.each do |prop|
+        properties << Property.new(prop, options, &block)
+      end
     end
 
     def properties
