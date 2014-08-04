@@ -1,6 +1,6 @@
 # Kartograph
 
-TODO: Write a gem description
+A Serialization / Deserialization library.
 
 ## Installation
 
@@ -11,10 +11,6 @@ Add this line to your application's Gemfile:
 And then execute:
 
     $ bundle
-
-Or install it yourself as:
-
-    $ gem install kartograph
 
 ## Usage
 
@@ -142,7 +138,7 @@ Now when JSON includes comments for a user, it will know how to map the comments
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/kartograph/fork )
+1. Fork it ( https://github.com/digitaloceancloud/kartograph/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
