@@ -42,6 +42,11 @@ describe Kartograph::Property do
       property = Kartograph::Property.new(:name)
       expect(property.scopes).to eq( [] )
     end
+
+    it 'always casts to an array' do
+      property = Kartograph::Property.new(:name, scopes: :read)
+      expect(property.scopes).to eq [:read]
+    end
   end
 
   describe '#plural?' do
