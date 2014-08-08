@@ -179,7 +179,7 @@ describe Kartograph::Property do
       end
 
       context 'when set to plural but the key is nil' do
-        it 'returns nil' do
+        it 'returns an empty array' do
           dummy_class = Struct.new(:id, :name)
 
           nested_property = Kartograph::Property.new(:hello, plural: true) do
@@ -192,7 +192,7 @@ describe Kartograph::Property do
           hash = { hello: nil }
           value = nested_property.value_from(hash)
 
-          expect(value).to be_nil
+          expect(value).to eq([])
         end
       end
     end

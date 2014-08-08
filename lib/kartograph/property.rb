@@ -27,7 +27,6 @@ module Kartograph
     def value_from(object, scope = nil)
       return if object.nil?
       value = object.has_key?(name) ? object[name] : object[name.to_s]
-      return if value.nil?
       map ? sculpt_value(value, scope) : value
     end
 
@@ -55,11 +54,11 @@ module Kartograph
     private
 
     def sculpt_value(value, scope)
-      plural? ? value.map {|v| Sculptor.new(v, map).sculpt(scope) } : Sculptor.new(value, map).sculpt(scope)
+      plural? ? Array(value).map {|v| Sculptor.new(v, map).sculpt(scope) } : Sculptor.new(value, map).sculpt(scope)
     end
 
     def artist_value(value, scope)
-      plural? ? value.map {|v| Artist.new(v, map).draw(scope) } : Artist.new(value, map).draw(scope)
+      plural? ? Array(value).map {|v| Artist.new(v, map).draw(scope) } : Artist.new(value, map).draw(scope)
     end
   end
 end
