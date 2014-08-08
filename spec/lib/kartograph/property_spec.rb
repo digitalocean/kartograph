@@ -177,6 +177,24 @@ describe Kartograph::Property do
         expect(value[1].id).to eq(hash[:hello][1]['id'])
         expect(value[1].name).to eq(hash[:hello][1]['name'])
       end
+
+      context 'when set to plural but the key is nil' do
+        it 'returns nil' do
+          dummy_class = Struct.new(:id, :name)
+
+          nested_property = Kartograph::Property.new(:hello, plural: true) do
+            mapping dummy_class
+
+            property :id
+            property :name
+          end
+
+          hash = { hello: nil }
+          value = nested_property.value_from(hash)
+
+          expect(value).to be_nil
+        end
+      end
     end
   end
 
