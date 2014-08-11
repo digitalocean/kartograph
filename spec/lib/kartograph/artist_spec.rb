@@ -35,6 +35,18 @@ describe Kartograph::Artist do
       expect { artist.draw }.to raise_error(ArgumentError).with_message("#{object} does not respond to bunk, so we can't map it")
     end
 
+    context 'for a property with a key set on it' do
+      it 'returns the hash with the key set correctly' do
+        object     = double('object', hello: 'world')
+        properties << Kartograph::Property.new(:hello, key: :hola)
+
+        artist = Kartograph::Artist.new(object, map)
+        masterpiece = artist.draw
+
+        expect(masterpiece).to include(hola: 'world')
+      end
+    end
+
     context 'for filtered drawing' do
       it 'only returns the scoped properties' do
         object     = double('object', hello: 'world', foo: 'bar')

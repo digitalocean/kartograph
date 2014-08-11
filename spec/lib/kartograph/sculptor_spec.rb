@@ -15,13 +15,14 @@ describe Kartograph::Sculptor do
 
   describe '#sculpt' do
     let(:map) { Kartograph::Map.new }
-    let(:object) { { 'id' => 343, 'name' => 'Guilty Spark' } }
+    let(:object) { { 'id' => 343, 'name' => 'Guilty Spark', 'email_address' => 'guilty@bungie.net' } }
 
     context 'without a scope' do
       before do
         map.mapping DummyUser
         map.property :id, scopes: [:read]
         map.property :name, scopes: [:read, :create]
+        map.property :email, scopes: [:read, :create], key: 'email_address'
       end
 
       it 'returns a coerced user' do
@@ -31,6 +32,7 @@ describe Kartograph::Sculptor do
         expect(sculpted).to be_kind_of(DummyUser)
         expect(sculpted.id).to eq(object['id'])
         expect(sculpted.name).to eq(object['name'])
+        expect(sculpted.email).to eq(object['email_address'])
       end
     end
 
