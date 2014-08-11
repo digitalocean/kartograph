@@ -1,2 +1,1 @@
-class DummyUser < Struct.new(:id, :name, :comment)
-end
+DummyUser = Struct.new(:id, :name, :comment, :email)

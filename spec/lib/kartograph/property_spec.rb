@@ -9,7 +9,7 @@ describe Kartograph::Property do
       property = Kartograph::Property.new(name, options)
       expect(property.name).to eq(name)
       expect(property.options).to eq(options)
-      expect(property.key).to eq('hey')
+      expect(property.key).to eq(:hey)
     end
 
     context 'with a key' do
