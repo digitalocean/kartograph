@@ -11,6 +11,11 @@ module Kartograph
       @properties ||= PropertyCollection.new
     end
 
+    def scoped(*scopes, &block)
+      proxy = ScopeProxy.new(self, scopes)
+      proxy.instance_eval(&block)
+    end
+
     def root_keys
       @root_keys ||= []
     end

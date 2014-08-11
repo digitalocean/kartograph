@@ -134,6 +134,30 @@ class CommentMapping
 end
 ```
 
+
+### Scope blocks
+
+Sometimes adding scopes to all properties can be tedious, to avoid that, you can define properties within a scope block.
+
+```ruby
+class UserMapping
+  include Kartograph::DSL
+
+  kartograph do
+    scoped :read do
+      property :name
+      property :id
+      property :email, key: 'email_address' # The JSON returned has the key of email_address, our property is called email however.
+    end
+
+    scoped :update, :create do
+      property :name
+      property :email, key: 'email_address'
+    end
+  end
+end
+```
+
 Now when JSON includes comments for a user, it will know how to map the comments using the provided Kartograph definition.
 
 ## Contributing

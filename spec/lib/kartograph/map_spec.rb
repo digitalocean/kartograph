@@ -92,4 +92,17 @@ describe Kartograph::Map do
       expect(map1).to eq(map2)
     end
   end
+
+  describe '#scoped' do
+    it 'adds properties with the scopes defined on the block instantiation' do
+      map.scoped :read, :write do
+        property :name
+        property :something
+      end
+
+      expect(map.properties.size).to eq(2)
+      expect(map.properties.filter_by_scope(:read).map(&:name)).to eq([:name, :something])
+      expect(map.properties.filter_by_scope(:write).map(&:name)).to eq([:name, :something])
+    end
+  end
 end
