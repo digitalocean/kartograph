@@ -2,6 +2,8 @@
 
 A Serialization / Deserialization library.
 
+[![Build Status](https://travis-ci.org/digitaloceancloud/kartograph.svg?branch=master)](https://travis-ci.org/digitaloceancloud/kartograph)
+
 ## Installation
 
 Add this line to your application's Gemfile:
