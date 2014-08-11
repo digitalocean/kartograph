@@ -19,6 +19,10 @@ module Kartograph
       end
     end
 
+    def key
+      options[:key] || name.to_s
+    end
+
     def value_for(object, scope = nil)
       value = object.send(name)
       map ? artist_value(value, scope) : value
