@@ -25,6 +25,7 @@ module Kartograph
 
     def value_for(object, scope = nil)
       value = object.send(name)
+      return if value.nil?
       map ? artist_value(value, scope) : value
     end
 

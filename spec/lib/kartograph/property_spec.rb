@@ -109,6 +109,18 @@ describe Kartograph::Property do
           ])
         end
       end
+
+      context 'when the value for the root object is nil' do
+        it 'returns nil' do
+          top_level = Kartograph::Property.new(:sammy) do
+            property :cephalopod
+          end
+
+          root = double(sammy: nil)
+
+          expect(top_level.value_for(root)).to be_nil
+        end
+      end
     end
   end
 
