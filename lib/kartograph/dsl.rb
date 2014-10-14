@@ -18,12 +18,15 @@ module Kartograph
       def representation_for(scope, object, dumper = JSON)
         drawed = Artist.new(object, @kartograph_map).draw(scope)
 
-        retrieve_root_key(scope, :singular) do |root_key|
-          # Reassign drawed if a root key exists
-          drawed = { root_key => drawed }
+        dumper.dump(prepend_root_key(scope, :singular, drawed))
+      end
+
+      def represent_collection_for(scope, objects, dumper = JSON)
+        drawed_objects = objects.map do |object|
+          Artist.new(object, @kartograph_map).draw(scope)
         end
 
-        dumper.dump(drawed)
+        dumper.dump(prepend_root_key(scope, :plural, drawed_objects))
       end
 
       def extract_single(content, scope, loader = JSON)
@@ -51,12 +54,21 @@ module Kartograph
       end
 
       private
+      def prepend_root_key(scope, plurality, payload)
+        retrieve_root_key(scope, plurality) do |root_key|
+          # Reassign drawed if a root key exists
+          payload = { root_key => payload }
+        end
+
+        payload
+      end
 
       def retrieve_root_key(scope, type, &block)
         if root_key = @kartograph_map.root_key_for(scope, type)
           yield root_key
         end
       end
+
     end
   end
 end

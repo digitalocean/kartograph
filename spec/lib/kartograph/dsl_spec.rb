@@ -48,6 +48,49 @@ describe Kartograph::DSL do
     end
   end
 
+  describe '.represent_collection_for' do
+    include_context 'DSL Objects'
+
+    let(:users) { Array.new(3, object) }
+
+    subject(:parsed) do
+      json = mapped.represent_collection_for(:read, users)
+      JSON.parse(json)
+    end
+
+    it 'returns the objects as a collection' do
+      json = mapped.represent_collection_for(:read, users)
+      parsed = JSON.parse(json)
+
+      expect(parsed).to be_an(Array)
+      expect(parsed.size).to be(3)
+
+      expect(parsed[0]['id']).to   eq(users[0].id)
+      expect(parsed[0]['name']).to eq(users[0].name)
+      expect(parsed[1]['id']).to   eq(users[1].id)
+      expect(parsed[1]['name']).to eq(users[1].name)
+    end
+
+    context 'with a root key' do
+      it "includes the root key" do
+        root_key_name = "the_root_key"
+
+        mapped.kartograph do
+          root_key plural: root_key_name, scopes: [:read]
+        end
+
+        expect(parsed).to be_an(Hash)
+        expect(parsed.keys.first).to eq(root_key_name)
+
+        parsed_array = parsed[root_key_name]
+        expect(parsed_array[0]['id']).to   eq(users[0].id)
+        expect(parsed_array[0]['name']).to eq(users[0].name)
+        expect(parsed_array[1]['id']).to   eq(users[1].id)
+        expect(parsed_array[1]['name']).to eq(users[1].name)
+      end
+    end
+  end
+
   describe '.extract_single' do
     include_context 'DSL Objects'
     let(:json) do
