@@ -27,6 +27,16 @@ describe Kartograph::Artist do
       expect(masterpiece).to include(hello: 'world')
     end
 
+    it 'does not return a key if the value is not set' do
+      object     = double('object', hello: nil)
+      properties << Kartograph::Property.new(:hello)
+
+      artist = Kartograph::Artist.new(object, map)
+      masterpiece = artist.draw
+
+      expect(masterpiece).not_to include(:hello)
+    end
+
     it 'raises for a property that the object does not have' do
       object = double('object')
       properties << Kartograph::Property.new(:bunk)
