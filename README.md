@@ -36,6 +36,17 @@ user = User.new(name: 'Bobby Tables')
 json_for_create = UserMapping.representation_for(:create, user)
 ```
 
+### Rendering Collections as JSON
+
+```ruby
+user = User.new(name: 'Bobby Tables')
+users = Array.new(10, user)
+
+json = UserMapping.represent_collection_for(:read, users)
+```
+
+---
+
 Some API's will give you the created resource back as JSON as well on a successful create. For that, you may do something like this:
 
 ```ruby
@@ -93,7 +104,7 @@ class UserMapping
 
   kartograph do
     mapping User
-    root_key singular: 'user', plural: 'users' scopes: [:read]
+    root_key singular: 'user', plural: 'users', scopes: [:read]
     property :id, scopes: [:read]
   end
 end
