@@ -11,4 +11,13 @@ module Kartograph
 
   autoload :Artist, 'kartograph/artist'
   autoload :Sculptor, 'kartograph/sculptor'
+
+  class << self
+    attr_accessor :default_dumper
+    attr_accessor :default_loader
+
+  end
+
+  self.default_dumper = JSON
+  self.default_loader = JSON
 end

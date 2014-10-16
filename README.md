@@ -173,6 +173,25 @@ end
 
 Now when JSON includes comments for a user, it will know how to map the comments using the provided Kartograph definition.
 
+---
+
+### Caching
+
+Kartograph has the option to cache certain serializations, determined by the way you setup the key.
+
+```ruby
+class UserMapping
+  include Kartograph::DSL
+
+  kartograph do
+    cache { Rails.cache } # As long as this respond to #fetch(key_name, options = {}, &block) it will work
+    cache_key { |object| object.cache_key }
+
+    end
+  end
+end
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/digitaloceancloud/kartograph/fork )
