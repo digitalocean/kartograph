@@ -16,10 +16,10 @@ module Kartograph
       scoped_properties.each_with_object({}) do |property, mapped|
         raise ArgumentError, "#{object} does not respond to #{property.name}, so we can't map it" unless object.respond_to?(property.name)
 
-        mapped[property.key] = if map.cache.nil?
-          extract_from_object(property, scope)
-        else
+        mapped[property.key] = if map.cache
           extract_from_cache(property, scope)
+        else
+          extract_from_object(property, scope)
         end
       end
     end
