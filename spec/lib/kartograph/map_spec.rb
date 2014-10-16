@@ -68,6 +68,10 @@ describe Kartograph::Map do
       map.mapping mapped_class
       map.root_key singular: 'woot', plural: 'woots', scopes: [:read]
 
+      cache_key = Proc.new {}
+      map.cache 'hello'
+      map.cache_key &cache_key
+
       new_map = map.dup
 
       expect(new_map.properties[0]).to_not be(prop1)
@@ -79,6 +83,54 @@ describe Kartograph::Map do
 
       expect(new_map.mapping).to eq(mapped_class)
       expect(new_map.root_keys).to eq(map.root_keys)
+
+      expect(new_map.cache).to eq(map.cache)
+      expect(new_map.cache_key).to eq(cache_key)
+    end
+  end
+
+  describe '#cache' do
+    it "stores the caching method" do
+      cacher = double
+      map.cache cacher
+
+      expect(map.cache).to be(cacher)
+    end
+
+    it 'returns the kartograph cache if set' do
+      cacher = double('cache')
+      Kartograph.default_cache = cacher
+
+      expect(map.cache).to be(cacher)
+    end
+
+    it 'goes straight to the object if cache is overridden with false' do
+      cacher = double('cache')
+      Kartograph.default_cache = cacher
+
+      property = Kartograph::Property.new(:bunk) do
+        cache false
+      end
+
+      map.properties << property
+
+      expect(property.map.cache).to be(false)
+    end
+  end
+
+  describe '#cache_key' do
+    it 'stores the cache key block' do
+      cache_key = Proc.new {}
+      map.cache_key(&cache_key)
+
+      expect(map.cache_key).to be(cache_key)
+    end
+
+    it 'returns the kartograph cache_key if set' do
+      cache_key = double('cache key')
+      Kartograph.default_cache_key = cache_key
+
+      expect(map.cache_key).to be(cache_key)
     end
   end
 

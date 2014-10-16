@@ -29,6 +29,16 @@ module Kartograph
       root_keys << RootKey.new(options)
     end
 
+    def cache(object = nil)
+      @cache = object unless object.nil?
+      @cache.nil? ? Kartograph.default_cache : @cache
+    end
+
+    def cache_key(&calculator)
+      @cache_calculator = calculator if block_given?
+      @cache_calculator.nil? ? Kartograph.default_cache_key : @cache_calculator
+    end
+
     def root_key_for(scope, type)
       return unless %i(singular plural).include?(type)
 
@@ -48,6 +58,9 @@ module Kartograph
         self.root_keys.each do |rk|
           map.root_keys << rk
         end
+
+        map.cache self.cache
+        map.cache_key &self.cache_key if self.cache_key
       end
     end
 

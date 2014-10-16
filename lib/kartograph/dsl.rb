@@ -15,13 +15,13 @@ module Kartograph
         @kartograph_map
       end
 
-      def representation_for(scope, object, dumper = JSON)
+      def representation_for(scope, object, dumper = Kartograph.default_dumper)
         drawed = Artist.new(object, @kartograph_map).draw(scope)
 
         dumper.dump(prepend_root_key(scope, :singular, drawed))
       end
 
-      def represent_collection_for(scope, objects, dumper = JSON)
+      def represent_collection_for(scope, objects, dumper = Kartograph.default_dumper)
         drawed_objects = objects.map do |object|
           Artist.new(object, @kartograph_map).draw(scope)
         end
@@ -29,7 +29,7 @@ module Kartograph
         dumper.dump(prepend_root_key(scope, :plural, drawed_objects))
       end
 
-      def extract_single(content, scope, loader = JSON)
+      def extract_single(content, scope, loader = Kartograph.default_loader)
         loaded = loader.load(content)
 
         retrieve_root_key(scope, :singular) do |root_key|
@@ -40,7 +40,7 @@ module Kartograph
         Sculptor.new(loaded, @kartograph_map).sculpt(scope)
       end
 
-      def extract_collection(content, scope, loader = JSON)
+      def extract_collection(content, scope, loader = Kartograph.default_loader)
         loaded = loader.load(content)
 
         retrieve_root_key(scope, :plural) do |root_key|
