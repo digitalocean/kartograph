@@ -78,5 +78,23 @@ describe Kartograph::Artist do
         end
       end
     end
+
+    context "with caching enabled" do
+      it "only calls the child once" do
+        cacher = double('cacher', fetch: 'cached-value')
+        object = double('object', foo: 'bar', cache_key: 'test-cache-key')
+
+        map.cache(cacher)
+        map.cache_key { |obj| obj.cache_key }
+        map.property :foo
+
+        artist = Kartograph::Artist.new(object, map)
+        masterpiece = artist.draw
+
+        expect(masterpiece).to eq(foo: cacher.fetch)
+
+        expect(cacher).to have_received(:fetch).with('test-cache-key')
+      end
+    end
   end
 end
