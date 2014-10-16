@@ -96,6 +96,15 @@ describe Kartograph::Map do
 
       expect(map.cache).to be(cacher)
     end
+
+    it 'goes straight to the object if cache is overridden with false' do
+      cacher = double('cache')
+      Kartograph.default_cache = cacher
+
+      map.cache false
+
+      expect(map.cache).to be(false)
+    end
   end
 
   describe '#cache_key' do
