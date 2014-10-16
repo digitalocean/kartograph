@@ -68,6 +68,10 @@ describe Kartograph::Map do
       map.mapping mapped_class
       map.root_key singular: 'woot', plural: 'woots', scopes: [:read]
 
+      cache_key = Proc.new {}
+      map.cache 'hello'
+      map.cache_key &cache_key
+
       new_map = map.dup
 
       expect(new_map.properties[0]).to_not be(prop1)
@@ -79,6 +83,9 @@ describe Kartograph::Map do
 
       expect(new_map.mapping).to eq(mapped_class)
       expect(new_map.root_keys).to eq(map.root_keys)
+
+      expect(new_map.cache).to eq(map.cache)
+      expect(new_map.cache_key).to eq(cache_key)
     end
   end
 
@@ -101,9 +108,13 @@ describe Kartograph::Map do
       cacher = double('cache')
       Kartograph.default_cache = cacher
 
-      map.cache false
+      property = Kartograph::Property.new(:bunk) do
+        cache false
+      end
 
-      expect(map.cache).to be(false)
+      map.properties << property
+
+      expect(property.map.cache).to be(false)
     end
   end
 

@@ -58,6 +58,9 @@ module Kartograph
         self.root_keys.each do |rk|
           map.root_keys << rk
         end
+
+        map.cache self.cache
+        map.cache_key &self.cache_key if self.cache_key
       end
     end
 
