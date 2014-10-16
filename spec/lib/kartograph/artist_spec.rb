@@ -80,7 +80,7 @@ describe Kartograph::Artist do
     end
 
     context "with caching enabled" do
-      let(:cacher) { double('cacher', fetch: 'cached-value') }
+      let(:cacher) { double('cacher', fetch: { foo: 'cached-value' }) }
       let(:object) { double('object', foo: 'bar', cache_key: 'test-cache-key') }
 
       it "uses the cache fetch for values" do
@@ -91,7 +91,7 @@ describe Kartograph::Artist do
         artist = Kartograph::Artist.new(object, map)
         masterpiece = artist.draw
 
-        expect(masterpiece).to eq(foo: cacher.fetch)
+        expect(masterpiece).to eq(cacher.fetch)
 
         expect(cacher).to have_received(:fetch).with('test-cache-key')
       end
