@@ -80,12 +80,12 @@ describe Kartograph::Artist do
     end
 
     context "with caching enabled" do
-      it "only calls the child once" do
-        cacher = double('cacher', fetch: 'cached-value')
-        object = double('object', foo: 'bar', cache_key: 'test-cache-key')
+      let(:cacher) { double('cacher', fetch: 'cached-value') }
+      let(:object) { double('object', foo: 'bar', cache_key: 'test-cache-key') }
 
+      it "uses the cache fetch for values" do
         map.cache(cacher)
-        map.cache_key { |obj| obj.cache_key }
+        map.cache_key { |obj, scope| obj.cache_key }
         map.property :foo
 
         artist = Kartograph::Artist.new(object, map)
@@ -94,6 +94,20 @@ describe Kartograph::Artist do
         expect(masterpiece).to eq(foo: cacher.fetch)
 
         expect(cacher).to have_received(:fetch).with('test-cache-key')
+      end
+
+      it "uses the cache key for the object and scope" do
+        called = double(call: 'my-cache')
+
+        map.cache(cacher)
+        map.cache_key { |obj, scope| called.call(obj, scope) }
+
+        map.property :foo, scopes: [:read]
+
+        artist = Kartograph::Artist.new(object, map)
+        masterpiece = artist.draw(:read)
+
+        expect(called).to have_received(:call).with(object, :read)
       end
     end
   end
