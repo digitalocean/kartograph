@@ -89,12 +89,26 @@ describe Kartograph::Map do
 
       expect(map.cache).to be(cacher)
     end
+
+    it 'returns the kartograph cache if set' do
+      cacher = double('cache')
+      Kartograph.default_cache = cacher
+
+      expect(map.cache).to be(cacher)
+    end
   end
 
   describe '#cache_key' do
     it 'stores the cache key block' do
       cache_key = Proc.new {}
       map.cache_key(&cache_key)
+
+      expect(map.cache_key).to be(cache_key)
+    end
+
+    it 'returns the kartograph cache_key if set' do
+      cache_key = double('cache key')
+      Kartograph.default_cache_key = cache_key
 
       expect(map.cache_key).to be(cache_key)
     end

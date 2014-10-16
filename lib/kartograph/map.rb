@@ -31,12 +31,12 @@ module Kartograph
 
     def cache(object = nil)
       @cache = object unless object.nil?
-      @cache
+      @cache.nil? ? Kartograph.default_cache : @cache
     end
 
     def cache_key(&calculator)
       @cache_calculator = calculator if block_given?
-      @cache_calculator
+      @cache_calculator.nil? ? Kartograph.default_cache_key : @cache_calculator
     end
 
     def root_key_for(scope, type)

@@ -13,6 +13,13 @@ RSpec.configure do |config|
   config.filter_run :focus
   config.run_all_when_everything_filtered = true
 
+  config.after(:each) do
+    Kartograph.default_dumper = JSON
+    Kartograph.default_loader = JSON
+    Kartograph.default_cache = nil
+    Kartograph.default_cache_key = nil
+  end
+
 =begin
 
   # Many RSpec users commonly either run the entire suite or an individual

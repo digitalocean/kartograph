@@ -15,7 +15,8 @@ module Kartograph
   class << self
     attr_accessor :default_dumper
     attr_accessor :default_loader
-
+    attr_accessor :default_cache
+    attr_accessor :default_cache_key
   end
 
   self.default_dumper = JSON
