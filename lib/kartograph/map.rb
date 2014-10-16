@@ -29,6 +29,16 @@ module Kartograph
       root_keys << RootKey.new(options)
     end
 
+    def cache(object = nil)
+      @cache = object unless object.nil?
+      @cache
+    end
+
+    def cache_key(&calculator)
+      @cache_calculator = calculator if block_given?
+      @cache_calculator
+    end
+
     def root_key_for(scope, type)
       return unless %i(singular plural).include?(type)
 

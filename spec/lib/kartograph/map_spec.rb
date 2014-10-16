@@ -82,6 +82,24 @@ describe Kartograph::Map do
     end
   end
 
+  describe '#cache' do
+    it "stores the caching method" do
+      cacher = double
+      map.cache cacher
+
+      expect(map.cache).to be(cacher)
+    end
+  end
+
+  describe '#cache_key' do
+    it 'stores the cache key block' do
+      cache_key = Proc.new {}
+      map.cache_key(&cache_key)
+
+      expect(map.cache_key).to be(cache_key)
+    end
+  end
+
   describe 'Equality' do
     specify 'duplicated maps are equal to eachother' do
       map1 = Kartograph::Map.new
