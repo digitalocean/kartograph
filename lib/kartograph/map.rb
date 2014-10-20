@@ -81,7 +81,7 @@ module Kartograph
     end
 
     def ==(other)
-      methods = %i(properties root_keys mapping)
+      methods = %i(properties root_keys mapping cache cache_key)
       methods.inject(true) do |current_value, method|
         break unless current_value
         send(method) == other.send(method)
