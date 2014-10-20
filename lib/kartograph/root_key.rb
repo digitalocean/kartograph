@@ -7,7 +7,7 @@ module Kartograph
     end
 
     def scopes
-      options[:scopes] || []
+      Array(options[:scopes]) || []
     end
 
     %i(singular plural).each do |method|

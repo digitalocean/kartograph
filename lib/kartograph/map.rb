@@ -1,7 +1,18 @@
+require 'thread'
+
 module Kartograph
   class Map
+    def initialize
+      @scope_mutex = Mutex.new
+    end
+
     def property(*args, &block)
       options = args.last.is_a?(Hash) ? args.pop : {}
+
+      # Append scopes if we're currently mapping in a scoped block
+      options[:scopes] ||= []
+      options[:scopes] += Array(@current_scopes)
+
       args.each do |prop|
         properties << Property.new(prop, options, &block)
       end
@@ -12,8 +23,13 @@ module Kartograph
     end
 
     def scoped(*scopes, &block)
-      proxy = ScopeProxy.new(self, scopes)
-      proxy.instance_eval(&block)
+      @scope_mutex.synchronize do
+        @current_scopes = scopes
+
+        instance_eval(&block) if block_given?
+
+        @current_scopes = nil
+      end
     end
 
     def root_keys
@@ -65,7 +81,7 @@ module Kartograph
     end
 
     def ==(other)
-      methods = %i(properties root_keys mapping)
+      methods = %i(properties root_keys mapping cache cache_key)
       methods.inject(true) do |current_value, method|
         break unless current_value
         send(method) == other.send(method)
