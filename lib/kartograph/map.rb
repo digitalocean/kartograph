@@ -11,7 +11,11 @@ module Kartograph
 
       # Append scopes if we're currently mapping in a scoped block
       options[:scopes] ||= []
-      options[:scopes] += Array(@current_scopes)
+
+      if @current_scopes
+        options[:scopes] = Array(options[:scopes])
+        options[:scopes] += Array(@current_scopes)
+      end
 
       args.each do |prop|
         properties << Property.new(prop, options, &block)
