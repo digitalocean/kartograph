@@ -27,12 +27,21 @@ describe Kartograph::Artist do
       expect(masterpiece).to include(hello: 'world')
     end
 
-    it 'raises for a property that the object does not have' do
-      object = double('object')
-      properties << Kartograph::Property.new(:bunk)
-      artist = Kartograph::Artist.new(object, map)
+    context 'nil values' do
+      it 'raises for a property that the object does not have' do
+        object = double('object')
+        properties << Kartograph::Property.new(:bunk)
+        artist = Kartograph::Artist.new(object, map)
 
-      expect { artist.draw }.to raise_error(ArgumentError).with_message("#{object} does not respond to bunk, so we can't map it")
+        expect { artist.draw }.to raise_error(ArgumentError).with_message("#{object} does not respond to bunk, so we can't map it")
+      end
+
+      it 'gives more detail for a nil value returned' do
+        properties << Kartograph::Property.new(:bunk)
+        artist = Kartograph::Artist.new(nil, map)
+
+        expect { artist.draw }.to raise_error(ArgumentError).with_message("(nil) does not respond to bunk, so we can't map it")
+      end
     end
 
     context 'for a property with a key set on it' do
