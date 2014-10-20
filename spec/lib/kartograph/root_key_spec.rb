@@ -15,6 +15,11 @@ describe Kartograph::RootKey do
       instance = Kartograph::RootKey.new(scopes: [:read])
       expect(instance.scopes).to eq([:read])
     end
+
+    it 'reads the scopes as an array always' do
+      instance = Kartograph::RootKey.new(scopes: :read)
+      expect(instance.scopes).to eq([:read])
+    end
   end
 
   describe '#singular' do
