@@ -2,7 +2,7 @@
 
 A Serialization / Deserialization library.
 
-[![Build Status](https://travis-ci.org/digitaloceancloud/kartograph.svg?branch=master)](https://travis-ci.org/digitaloceancloud/kartograph)
+[![Build Status](https://travis-ci.org/digitalocean/kartograph.svg?branch=master)](https://travis-ci.org/digitalocean/kartograph)
 
 ## Installation
 
