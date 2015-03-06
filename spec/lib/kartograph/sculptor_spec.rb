@@ -17,6 +17,11 @@ describe Kartograph::Sculptor do
     let(:map) { Kartograph::Map.new }
     let(:object) { { 'id' => 343, 'name' => 'Guilty Spark', 'email_address' => 'guilty@bungie.net' } }
 
+    it 'returns nil if the object in nil' do
+      sculptor = Kartograph::Sculptor.new(nil, map)
+      expect(sculptor.sculpt).to be_nil
+    end
+
     context 'without a scope' do
       before do
         map.mapping DummyUser
