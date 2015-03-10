@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = "kartograph"
   spec.version       = Kartograph::VERSION
   spec.authors       = ["Robert Ross"]
-  spec.email         = ["rross@digitalocean.com", "ivan@digitalocean.com"]
+  spec.email         = ["engineering@digitalocean.com", "rross@digitalocean.com", "ivan@digitalocean.com"]
   spec.summary       = %q{Kartograph makes it easy to generate and convert JSON. It's intention is to be used for API clients.}
   spec.description   = %q{Kartograph makes it easy to generate and convert JSON. It's intention is to be used for API clients.}
   spec.homepage      = "https://github.com/digitaloceancloud/kartograph"
