@@ -122,6 +122,21 @@ describe Kartograph::DSL do
     end
   end
 
+  describe '.extract_into_object' do
+    include_context 'DSL Objects'
+    let(:json) do
+      { id: 1337, name: 'Paul the octopus' }
+    end
+
+    it 'returns a populated object from a JSON representation' do
+      object = DummyUser.new
+      mapped.extract_into_object(object, json.to_json, :read)
+
+      expect(object.id).to eq(1337)
+      expect(object.name).to eq('Paul the octopus')
+    end
+  end
+
   describe '.extract_collection' do
     include_context 'DSL Objects'
     let(:json) do
