@@ -40,6 +40,19 @@ module Kartograph
         Sculptor.new(loaded, @kartograph_map).sculpt(scope)
       end
 
+      def extract_into_object(object, content, scope, loader = Kartograph.default_loader)
+        loaded = loader.load(content)
+
+        retrieve_root_key(scope, :singular) do |root_key|
+          # Reassign loaded if a root key exists
+          loaded = loaded[root_key]
+        end
+
+        sculptor = Sculptor.new(loaded, @kartograph_map)
+        sculptor.sculpted_object = object
+        sculptor.sculpt(scope)
+      end
+
       def extract_collection(content, scope, loader = Kartograph.default_loader)
         loaded = loader.load(content)
 

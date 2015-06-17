@@ -13,6 +13,40 @@ describe Kartograph::Sculptor do
     end
   end
 
+  describe '#sculpted_object=' do
+    context 'objects that are not the mapping class' do
+      it 'raises an error' do
+        hash = {}
+        map = double(Kartograph::Map, mapping: Hash)
+
+        sculptor = Kartograph::Sculptor.new(hash, map)
+
+        expect {
+          sculptor.sculpted_object = ""
+        }.to raise_error(ArgumentError)
+      end
+    end
+
+    it 'sets the sculpted_object' do
+      hash = {}
+      map = double(Kartograph::Map, mapping: Hash)
+
+      sculptor = Kartograph::Sculptor.new(hash, map)
+      sculptor.sculpted_object = hash
+      expect(sculptor.sculpted_object).to be hash
+    end
+  end
+
+  describe '#sculpted_object' do
+    it 'initializes the mapping class' do
+      hash = {}
+      map = double(Kartograph::Map, mapping: Hash)
+
+      sculptor = Kartograph::Sculptor.new(hash, map)
+      expect(sculptor.sculpted_object).to be_kind_of(Hash)
+    end
+  end
+
   describe '#sculpt' do
     let(:map) { Kartograph::Map.new }
     let(:object) { { 'id' => 343, 'name' => 'Guilty Spark', 'email_address' => 'guilty@bungie.net' } }
@@ -38,6 +72,15 @@ describe Kartograph::Sculptor do
         expect(sculpted.id).to eq(object['id'])
         expect(sculpted.name).to eq(object['name'])
         expect(sculpted.email).to eq(object['email_address'])
+      end
+
+      it 'sculpts into a provided object' do
+        sculptor = Kartograph::Sculptor.new(object, map)
+        dummy = DummyUser.new
+        sculptor.sculpted_object = dummy
+        sculpted = sculptor.sculpt
+
+        expect(sculpted).to be dummy
       end
     end
 
