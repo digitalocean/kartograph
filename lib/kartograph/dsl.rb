@@ -15,11 +15,21 @@ module Kartograph
         @kartograph_map
       end
 
+      # Returns a hash representation of the object based on the mapping
+      #
+      # @param scope [Symbol] the scope of the mapping
+      # @param object the object to be mapped
+      # @return [Hash, Array]
       def hash_for(scope, object)
         drawn_object = Artist.new(object, @kartograph_map).draw(scope)
         prepend_root_key(scope, :singular, drawn_object)
       end
 
+      # Returns a hash representation of the collection of objects based on the mapping
+      #
+      # @param scope [Symbol] the scope of the mapping
+      # @params objects [Array] the array of objects to be mapped
+      # @return [Hash, Array]
       def hash_collection_for(scope, objects)
         drawn_objects = objects.map do |object|
           Artist.new(object, @kartograph_map).draw(scope)
