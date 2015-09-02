@@ -36,6 +36,16 @@ user = User.new(name: 'Bobby Tables')
 json_for_create = UserMapping.representation_for(:create, user)
 ```
 
+### Rendering Objects or Collections as Hashes
+
+```ruby
+user = User.new(name: 'PB Jelly')
+users = [user]
+
+hash = UserMapping.hash_for(:read, user)
+hash_collection = UserMapping.hash_collection_for(:read, user)
+```
+
 ### Rendering Collections as JSON
 
 ```ruby
