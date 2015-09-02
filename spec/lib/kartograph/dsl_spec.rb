@@ -20,6 +20,76 @@ describe Kartograph::DSL do
     end
   end
 
+  describe '.hash_for' do
+    include_context 'DSL Objects'
+
+    it 'returns the hash representation for an object' do
+      hash = mapped.hash_for(:create, object)
+      expect(hash).to eq({ 'name' => object.name })
+    end
+
+    context 'with a root key for the scope' do
+      it 'returns the hash with the root key' do
+        mapped.kartograph do
+          root_key singular: 'user', scopes: [:create]
+        end
+        hash = mapped.hash_for(:create, object)
+
+        expect(hash).to eq(
+          {
+            'user' => {
+              'name' => object.name
+            }
+          }
+        )
+      end
+    end
+  end
+
+  describe '.hash_collection_for' do
+    include_context 'DSL Objects'
+
+    let(:users) { Array.new(3, object) }
+
+    subject(:parsed) do
+      json = mapped.represent_collection_for(:read, users)
+      JSON.parse(json)
+    end
+
+    it 'returns the objects as a collection of hashes' do
+      collection = mapped.hash_collection_for(:read, users)
+
+      expect(collection).to be_an(Array)
+      expect(collection.size).to be(3)
+
+      expect(collection[0]['id']).to   eq(users[0].id)
+      expect(collection[0]['name']).to eq(users[0].name)
+      expect(collection[1]['id']).to   eq(users[1].id)
+      expect(collection[1]['name']).to eq(users[1].name)
+    end
+
+    context 'with a root key' do
+      it "includes the root key" do
+        root_key_name = "the_root_key"
+
+        mapped.kartograph do
+          root_key plural: root_key_name, scopes: [:read]
+        end
+
+        collection = mapped.hash_collection_for(:read, users)
+
+        expect(collection).to be_an(Hash)
+        expect(collection.keys.first).to eq(root_key_name)
+
+        collection_array = collection[root_key_name]
+        expect(collection_array[0]['id']).to   eq(users[0].id)
+        expect(collection_array[0]['name']).to eq(users[0].name)
+        expect(collection_array[1]['id']).to   eq(users[1].id)
+        expect(collection_array[1]['name']).to eq(users[1].name)
+      end
+    end
+  end
+
   describe '.representation_for' do
     include_context 'DSL Objects'
 

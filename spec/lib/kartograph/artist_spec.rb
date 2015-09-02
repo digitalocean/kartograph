@@ -24,7 +24,7 @@ describe Kartograph::Artist do
       artist = Kartograph::Artist.new(object, map)
       masterpiece = artist.draw
 
-      expect(masterpiece).to include(hello: 'world')
+      expect(masterpiece).to include('hello' => 'world')
     end
 
     it 'raises for a property that the object does not have' do
@@ -43,7 +43,7 @@ describe Kartograph::Artist do
         artist = Kartograph::Artist.new(object, map)
         masterpiece = artist.draw
 
-        expect(masterpiece).to include(hola: 'world')
+        expect(masterpiece).to include('hola' => 'world')
       end
     end
 
@@ -56,7 +56,7 @@ describe Kartograph::Artist do
         artist = Kartograph::Artist.new(object, map)
         masterpiece = artist.draw(:read)
 
-        expect(masterpiece).to eq(hello: 'world')
+        expect(masterpiece).to eq('hello' => 'world')
       end
 
       context 'on nested properties' do
@@ -74,7 +74,7 @@ describe Kartograph::Artist do
           artist = Kartograph::Artist.new(object, map)
           masterpiece = artist.draw(:read)
 
-          expect(masterpiece).to eq(child: { foo: child.foo })
+          expect(masterpiece).to eq('child' => { 'foo' => child.foo })
         end
       end
     end

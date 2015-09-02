@@ -15,18 +15,25 @@ module Kartograph
         @kartograph_map
       end
 
-      def representation_for(scope, object, dumper = Kartograph.default_dumper)
-        drawed = Artist.new(object, @kartograph_map).draw(scope)
-
-        dumper.dump(prepend_root_key(scope, :singular, drawed))
+      def hash_for(scope, object)
+        drawn_object = Artist.new(object, @kartograph_map).draw(scope)
+        prepend_root_key(scope, :singular, drawn_object)
       end
 
-      def represent_collection_for(scope, objects, dumper = Kartograph.default_dumper)
-        drawed_objects = objects.map do |object|
+      def hash_collection_for(scope, objects)
+        drawn_objects = objects.map do |object|
           Artist.new(object, @kartograph_map).draw(scope)
         end
 
-        dumper.dump(prepend_root_key(scope, :plural, drawed_objects))
+        prepend_root_key(scope, :plural, drawn_objects)
+      end
+
+      def representation_for(scope, object, dumper = Kartograph.default_dumper)
+        dumper.dump(hash_for(scope, object))
+      end
+
+      def represent_collection_for(scope, objects, dumper = Kartograph.default_dumper)
+        dumper.dump(hash_collection_for(scope, objects))
       end
 
       def extract_single(content, scope, loader = Kartograph.default_loader)

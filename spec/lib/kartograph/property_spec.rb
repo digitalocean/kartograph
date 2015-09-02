@@ -9,7 +9,7 @@ describe Kartograph::Property do
       property = Kartograph::Property.new(name, options)
       expect(property.name).to eq(name)
       expect(property.options).to eq(options)
-      expect(property.key).to eq(:hey)
+      expect(property.key).to eq('hey')
     end
 
     context 'with a key' do
@@ -89,7 +89,7 @@ describe Kartograph::Property do
         child = double('child', cephalopod: 'I will ink you')
         root = double('root', sammy: child)
 
-        expect(top_level.value_for(root)).to eq(cephalopod: child.cephalopod)
+        expect(top_level.value_for(root)).to eq('cephalopod' => child.cephalopod)
       end
 
       context 'when it is plural' do
@@ -104,8 +104,8 @@ describe Kartograph::Property do
           root = double('root', sammy: [child1, child2])
 
           expect(top_level.value_for(root)).to eq([
-            { cephalopod: child1.cephalopod },
-            { cephalopod: child2.cephalopod }
+            { 'cephalopod' => child1.cephalopod },
+            { 'cephalopod' => child2.cephalopod }
           ])
         end
       end
