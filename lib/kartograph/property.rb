@@ -20,7 +20,7 @@ module Kartograph
     end
 
     def key
-      options[:key] || name
+      (options[:key] || name).to_s
     end
 
     def value_for(object, scope = nil)
@@ -31,7 +31,7 @@ module Kartograph
 
     def value_from(object, scope = nil)
       return if object.nil?
-      value = object.has_key?(key) ? object[key] : object[key.to_s]
+      value = object.has_key?(key) ? object[key] : object[key.to_sym]
       map ? sculpt_value(value, scope) : value
     end
 
