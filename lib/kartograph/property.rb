@@ -43,6 +43,10 @@ module Kartograph
       !!options[:plural]
     end
 
+    def optional?
+      !!options[:optional]
+    end
+
     def dup
       Property.new(name, options.dup).tap do |property|
         property.map = map.dup if self.map

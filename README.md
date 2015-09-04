@@ -202,6 +202,44 @@ class UserMapping
 end
 ```
 
+### Optional values
+
+By default, Kartograph will serialize the object and give any attributes without
+values a value of `null`. This could cause problems for some API's that expect
+default values to be omitted from a request in order to be ignored.
+
+Attributes can be marked as optional, meaning they will not be included in the
+representation if no value is given for that attribute or if the value is nil.
+
+```ruby
+class UserMapping
+  include Kartograph::DSL
+
+  kartograph do
+    mapping User
+    property :name, scopes: [:create, :update]
+    property :age, scopes: [:create]
+  end
+end
+
+class OptionalUserMapping
+  include Kartograph::DSL
+
+  kartograph do
+    mapping User
+    property :name, scopes: [:create, :update]
+    property :age, scopes: [:create], optional: true
+  end
+end
+
+user = User.new(name: 'Bobby Tables', age: nil)
+
+default_json = UserMapping.representation_for(:create, user)
+# => "{\"name\":\"Bobby Tables\",\"age\":null}"
+optional_json = OptionalUserMapping.representation_for(:create, user)
+# => "{\"name\":\"Bobby Tables\"}"
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/digitaloceancloud/kartograph/fork )

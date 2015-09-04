@@ -25,7 +25,7 @@ module Kartograph
       scoped_properties.each_with_object({}) do |property, mapped|
         raise ArgumentError, "#{object} does not respond to #{property.name}, so we can't map it" unless object.respond_to?(property.name)
 
-        mapped[property.key] = property.value_for(object, scope)
+        mapped[property.key] = property.value_for(object, scope) unless property.value_for(object, scope).nil? && property.optional?
       end
     end
   end
