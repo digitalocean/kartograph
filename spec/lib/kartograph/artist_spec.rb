@@ -28,7 +28,8 @@ describe Kartograph::Artist do
     end
 
     it 'raises for a property that the object does not have' do
-      object = double('object')
+      class TestArtistNoMethod; end
+      object = TestArtistNoMethod.new
       properties << Kartograph::Property.new(:bunk)
       artist = Kartograph::Artist.new(object, map)
 
