@@ -71,9 +71,7 @@ module Kartograph
 
         map.mapping self.mapping
 
-        self.root_keys.each do |rk|
-          map.root_keys << rk
-        end
+        map.root_keys.push *self.root_keys
 
         map.cache self.cache
         map.cache_key &self.cache_key if self.cache_key
