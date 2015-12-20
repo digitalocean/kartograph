@@ -18,8 +18,7 @@ module Kartograph
     end
 
     def ==(other)
-      each_with_index.inject(true) do |current_value, (property, index)|
-        break unless current_value
+      each_with_index.all? do |property, index|
         property == other[index]
       end
     end
