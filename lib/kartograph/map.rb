@@ -58,9 +58,8 @@ module Kartograph
     def root_key_for(scope, type)
       return unless %i(singular plural).include?(type)
 
-      if (root_key = root_keys.select {|rk| rk.scopes.include?(scope) }[0])
-        root_key.send(type)
-      end
+      root_key = root_keys.select {|rk| rk.scopes.include?(scope) }[0]
+      root_key.send(type) if root_key
     end
 
     def dup
