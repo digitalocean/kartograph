@@ -50,9 +50,8 @@ module Kartograph
     end
 
     def ==(other)
-      %i(name options map).inject(true) do |equals, method|
-        break unless equals
-        send(method) == other.send(method)
+      %i(name options map).any? do |attribute|
+        send(attribute) == other.send(attribute)
       end
     end
 
