@@ -58,11 +58,19 @@ module Kartograph
     private
 
     def sculpt_value(value, scope)
-      plural? ? Array(value).map {|v| Sculptor.new(v, map).sculpt(scope) } : Sculptor.new(value, map).sculpt(scope)
+      if plural?
+        Array(value).map {|v| Sculptor.new(v, map).sculpt(scope) }
+      else
+        Sculptor.new(value, map).sculpt(scope)
+      end
     end
 
     def artist_value(value, scope)
-      plural? ? Array(value).map {|v| Artist.new(v, map).draw(scope) } : Artist.new(value, map).draw(scope)
+      if plural?
+        Array(value).map {|v| Artist.new(v, map).draw(scope) }
+      else
+        Artist.new(value, map).draw(scope)
+      end
     end
   end
 end
