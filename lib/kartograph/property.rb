@@ -36,7 +36,7 @@ module Kartograph
     end
 
     def scopes
-      Array(options[:scopes] || [])
+      Array(options[:scopes])
     end
 
     def plural?
@@ -50,20 +50,27 @@ module Kartograph
     end
 
     def ==(other)
-      %i(name options map).inject(true) do |equals, method|
-        break unless equals
-        send(method) == other.send(method)
+      %i(name options map).all? do |attribute|
+        send(attribute) == other.send(attribute)
       end
     end
 
     private
 
     def sculpt_value(value, scope)
-      plural? ? Array(value).map {|v| Sculptor.new(v, map).sculpt(scope) } : Sculptor.new(value, map).sculpt(scope)
+      if plural?
+        Array(value).map {|v| Sculptor.new(v, map).sculpt(scope) }
+      else
+        Sculptor.new(value, map).sculpt(scope)
+      end
     end
 
     def artist_value(value, scope)
-      plural? ? Array(value).map {|v| Artist.new(v, map).draw(scope) } : Artist.new(value, map).draw(scope)
+      if plural?
+        Array(value).map {|v| Artist.new(v, map).draw(scope) }
+      else
+        Artist.new(value, map).draw(scope)
+      end
     end
   end
 end

@@ -58,9 +58,8 @@ module Kartograph
     def root_key_for(scope, type)
       return unless %i(singular plural).include?(type)
 
-      if (root_key = root_keys.select {|rk| rk.scopes.include?(scope) }[0])
-        root_key.send(type)
-      end
+      root_key = root_keys.select {|rk| rk.scopes.include?(scope) }[0]
+      root_key.send(type) if root_key
     end
 
     def dup
@@ -71,9 +70,7 @@ module Kartograph
 
         map.mapping self.mapping
 
-        self.root_keys.each do |rk|
-          map.root_keys << rk
-        end
+        map.root_keys.push *self.root_keys
 
         map.cache self.cache
         map.cache_key &self.cache_key if self.cache_key
@@ -81,10 +78,8 @@ module Kartograph
     end
 
     def ==(other)
-      methods = %i(properties root_keys mapping cache cache_key)
-      methods.inject(true) do |current_value, method|
-        break unless current_value
-        send(method) == other.send(method)
+      %i(properties root_keys mapping cache cache_key).all? do |attribute|
+        send(attribute) == other.send(attribute)
       end
     end
   end

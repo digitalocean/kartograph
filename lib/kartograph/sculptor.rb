@@ -25,7 +25,7 @@ module Kartograph
     end
 
     def sculpt(scope = nil)
-      return nil if @object.nil?
+      return if @object.nil?
 
       scoped_properties = scope ? properties.filter_by_scope(scope) : properties
 

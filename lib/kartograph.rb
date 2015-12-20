@@ -1,4 +1,4 @@
-require "kartograph/version"
+require 'kartograph/version'
 require 'json'
 
 module Kartograph

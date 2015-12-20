@@ -94,9 +94,8 @@ module Kartograph
       end
 
       def retrieve_root_key(scope, type, &block)
-        if root_key = @kartograph_map.root_key_for(scope, type)
-          yield root_key
-        end
+        root_key = @kartograph_map.root_key_for(scope, type)
+        yield root_key if root_key
       end
 
     end
