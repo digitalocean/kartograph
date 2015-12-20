@@ -50,7 +50,7 @@ module Kartograph
     end
 
     def ==(other)
-      %i(name options map).any? do |attribute|
+      %i(name options map).all? do |attribute|
         send(attribute) == other.send(attribute)
       end
     end
