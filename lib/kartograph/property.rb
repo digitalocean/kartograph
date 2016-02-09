@@ -24,7 +24,14 @@ module Kartograph
     end
 
     def value_for(object, scope = nil)
-      value = object.send(name)
+      value =
+        if object.respond_to?(name)
+          object.send(name)
+        elsif object.respond_to?(:[])
+          object[name]
+        else
+          raise ArgumentError, "#{object} does not respond to ##{name} or #[:#{name}], so we can't map it"
+        end
       return if value.nil?
       map ? artist_value(value, scope) : value
     end

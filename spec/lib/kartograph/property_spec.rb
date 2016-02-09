@@ -80,6 +80,13 @@ describe Kartograph::Property do
       expect(property.value_for(object)).to eq('cephalopod')
     end
 
+    it 'returns the value when passed an hash' do
+      property = Kartograph::Property.new(:sammy)
+      object = { sammy: 'cephalopod' }
+
+      expect(property.value_for(object)).to eq('cephalopod')
+    end
+
     context 'for a nested property set' do
       it 'returns nested properties' do
         top_level = Kartograph::Property.new(:sammy) do

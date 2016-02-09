@@ -33,7 +33,7 @@ describe Kartograph::Artist do
       properties << Kartograph::Property.new(:bunk)
       artist = Kartograph::Artist.new(object, map)
 
-      expect { artist.draw }.to raise_error(ArgumentError).with_message("#{object} does not respond to bunk, so we can't map it")
+      expect { artist.draw }.to raise_error(ArgumentError).with_message("#{object} does not respond to #bunk or #[:bunk], so we can't map it")
     end
 
     context 'for a property with a key set on it' do
