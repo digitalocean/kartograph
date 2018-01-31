@@ -231,5 +231,21 @@ describe Kartograph::Property do
       expect(duped.options).to_not be(instance.options)
       expect(duped.options).to eq(instance.options)
     end
+
+    context 'setting the map after duping' do
+      it 'draws a value' do
+        # NOTE: This test is a regression test introduced by caching of Artist instance.
+        dummy_class = Struct.new(:id, :name)
+        dummy = dummy_class.new
+        dummy.id = 123
+
+        instance = Kartograph::Property.new(:id, scopes: [:read])
+        duped = instance.dup
+        duped.map = Kartograph::Map.new
+        val = duped.value_for(dummy)
+
+        expect(val).to_not be_nil
+      end
+    end
   end
 end
