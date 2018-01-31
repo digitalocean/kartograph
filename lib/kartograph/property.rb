@@ -1,7 +1,6 @@
 module Kartograph
   class Property
-    attr_reader :name, :options
-    attr_accessor :map
+    attr_reader :name, :options, :map
 
     def initialize(name, options = {}, &block)
       @name = name
@@ -24,6 +23,11 @@ module Kartograph
     def key
       @key ||= (options[:key] || name).to_s
       @key
+    end
+
+    def map=(map)
+      @map = map
+      @artist = Artist.new(@map)
     end
 
     def value_for(object, scope = nil)
