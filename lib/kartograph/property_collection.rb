@@ -9,12 +9,19 @@ module Kartograph
 
     def initialize(*)
       @collection = []
+      @cache = {}
     end
 
     def filter_by_scope(scope)
-      select do |property|
+      if @cache.has_key? scope
+        return @cache[scope]
+      end
+
+      @cache[scope] = select do |property|
         property.scopes.include?(scope)
       end
+
+      @cache[scope]
     end
 
     def ==(other)

@@ -17,10 +17,13 @@ module Kartograph
         @map ||= Map.new
         block.arity > 0 ? block.call(map) : map.instance_eval(&block)
       end
+
+      @artist = Artist.new(@map)
     end
 
     def key
-      (options[:key] || name).to_s
+      @key ||= (options[:key] || name).to_s
+      @key
     end
 
     def value_for(object, scope = nil)
@@ -63,7 +66,7 @@ module Kartograph
     end
 
     def artist_value(value, scope)
-      plural? ? Array(value).map {|v| Artist.new(v, map).draw(scope) } : Artist.new(value, map).draw(scope)
+      plural? ? Array(value).map {|v| @artist.draw(v, scope) } : @artist.draw(value, scope)
     end
   end
 end

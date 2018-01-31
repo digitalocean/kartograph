@@ -1,9 +1,8 @@
 module Kartograph
   class Artist
-    attr_reader :object, :map
+    attr_reader :map
 
-    def initialize(object, map)
-      @object = object
+    def initialize(map)
       @map = map
     end
 
@@ -11,16 +10,16 @@ module Kartograph
       map.properties
     end
 
-    def draw(scope = nil)
+    def draw(object, scope = nil)
       if map.cache
         cache_key = map.cache_key.call(object, scope)
-        map.cache.fetch(cache_key) { build_properties(scope) }
+        map.cache.fetch(cache_key) { build_properties(object, scope) }
       else
-        build_properties(scope)
+        build_properties(object, scope)
       end
     end
 
-    def build_properties(scope)
+    def build_properties(object, scope)
       scoped_properties = scope ? properties.filter_by_scope(scope) : properties
       scoped_properties.each_with_object({}) do |property, mapped|
         begin

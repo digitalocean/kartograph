@@ -12,6 +12,8 @@ module Kartograph
           block.arity > 0 ? block.call(@kartograph_map) : @kartograph_map.instance_eval(&block)
         end
 
+        @artist = Artist.new(@kartograph_map)
+
         @kartograph_map
       end
 
@@ -21,7 +23,7 @@ module Kartograph
       # @param object the object to be mapped
       # @return [Hash, Array]
       def hash_for(scope, object)
-        drawn_object = Artist.new(object, @kartograph_map).draw(scope)
+        drawn_object = @artist.draw(object, scope)
         prepend_root_key(scope, :singular, drawn_object)
       end
 
@@ -32,7 +34,7 @@ module Kartograph
       # @return [Hash, Array]
       def hash_collection_for(scope, objects)
         drawn_objects = objects.map do |object|
-          Artist.new(object, @kartograph_map).draw(scope)
+          @artist.draw(object, scope)
         end
 
         prepend_root_key(scope, :plural, drawn_objects)
@@ -98,7 +100,6 @@ module Kartograph
           yield root_key
         end
       end
-
     end
   end
 end

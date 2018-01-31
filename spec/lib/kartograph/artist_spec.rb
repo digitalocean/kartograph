@@ -6,12 +6,10 @@ describe Kartograph::Artist do
 
   describe '#initialize' do
     it 'initializes with an object and a map' do
-      object     = double('object', name: 'hello')
       properties << Kartograph::Property.new(:name)
 
-      artist = Kartograph::Artist.new(object, map)
+      artist = Kartograph::Artist.new(map)
 
-      expect(artist.object).to be(object)
       expect(artist.map).to be(map)
     end
   end
@@ -21,8 +19,8 @@ describe Kartograph::Artist do
       object     = double('object', hello: 'world')
       properties << Kartograph::Property.new(:hello)
 
-      artist = Kartograph::Artist.new(object, map)
-      masterpiece = artist.draw
+      artist = Kartograph::Artist.new(map)
+      masterpiece = artist.draw(object)
 
       expect(masterpiece).to include('hello' => 'world')
     end
@@ -31,9 +29,9 @@ describe Kartograph::Artist do
       class TestArtistNoMethod; end
       object = TestArtistNoMethod.new
       properties << Kartograph::Property.new(:bunk)
-      artist = Kartograph::Artist.new(object, map)
+      artist = Kartograph::Artist.new(map)
 
-      expect { artist.draw }.to raise_error(ArgumentError).with_message("#{object} does not respond to bunk, so we can't map it")
+      expect { artist.draw(object) }.to raise_error(ArgumentError).with_message("#{object} does not respond to bunk, so we can't map it")
     end
 
     context 'for a property with a key set on it' do
@@ -41,8 +39,8 @@ describe Kartograph::Artist do
         object     = double('object', hello: 'world')
         properties << Kartograph::Property.new(:hello, key: :hola)
 
-        artist = Kartograph::Artist.new(object, map)
-        masterpiece = artist.draw
+        artist = Kartograph::Artist.new(map)
+        masterpiece = artist.draw(object)
 
         expect(masterpiece).to include('hola' => 'world')
       end
@@ -54,8 +52,8 @@ describe Kartograph::Artist do
         properties << Kartograph::Property.new(:hello, scopes: [:create, :read])
         properties << Kartograph::Property.new(:foo, scopes: [:create])
 
-        artist = Kartograph::Artist.new(object, map)
-        masterpiece = artist.draw(:read)
+        artist = Kartograph::Artist.new(map)
+        masterpiece = artist.draw(object, :read)
 
         expect(masterpiece).to eq('hello' => 'world')
       end
@@ -72,8 +70,8 @@ describe Kartograph::Artist do
 
           properties << root_property
 
-          artist = Kartograph::Artist.new(object, map)
-          masterpiece = artist.draw(:read)
+          artist = Kartograph::Artist.new(map)
+          masterpiece = artist.draw(object, :read)
 
           expect(masterpiece).to eq('child' => { 'foo' => child.foo })
         end
@@ -89,8 +87,8 @@ describe Kartograph::Artist do
         map.cache_key { |obj, scope| obj.cache_key }
         map.property :foo
 
-        artist = Kartograph::Artist.new(object, map)
-        masterpiece = artist.draw
+        artist = Kartograph::Artist.new(map)
+        masterpiece = artist.draw(object)
 
         expect(masterpiece).to eq(cacher.fetch)
 
@@ -105,8 +103,8 @@ describe Kartograph::Artist do
 
         map.property :foo, scopes: [:read]
 
-        artist = Kartograph::Artist.new(object, map)
-        masterpiece = artist.draw(:read)
+        artist = Kartograph::Artist.new(map)
+        masterpiece = artist.draw(object, :read)
 
         expect(called).to have_received(:call).with(object, :read)
       end
