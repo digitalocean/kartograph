@@ -21,7 +21,7 @@ module Kartograph
     end
 
     def key
-      @key ||= (options[:key] || name).to_s
+      @key ||= (options[:key] || name).to_s.freeze
       @key
     end
 
